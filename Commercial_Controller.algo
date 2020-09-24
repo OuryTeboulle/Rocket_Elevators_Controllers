@@ -7,7 +7,7 @@ user call floor
 elevator current floor
 elevator relative position = elevator current floor (value) - user call floor (value)
 distance between elevator current floor and user call floor = |user call floor (value) - elevator current floor (value)| //'absolute value, can be only positive number '
-elevator current movement = idle || move up || move down
+elevator current status = idle || move up || move down
 elevator load weight
 
 
@@ -92,7 +92,7 @@ SEQUENCE (get data)
 
     READ user call floor (value)
     READ all elevator current floor (value)
-    READ all the elevators current movement
+    READ all the elevators current status
     READ all the elevators load weight (value)
     READ all the elevators |UsersCallFloor - ElevatorCurrentFloor| 
     
@@ -115,58 +115,58 @@ END SEQUENCE
 
 
 
-SEQUENCE (set score according to elevator relative position and elevator current movement for request up)
+SEQUENCE (set score according to elevator relative position and elevator current status for request up)
 
-    IF Elevator relative position < 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position < 0 AND Elevator current status = move UP THEN
     SET score 2
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position < 0 AND Elevator current status = move DOWN THEN
     SET score 0
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position < 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position > 0 AND Elevator current status = move UP THEN
     SET score 0
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position > 0 AND Elevator current status = move DOWN THEN
     SET score 1
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position > 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
 END SEQUENCE
 
 
-SEQUENCE (set score according to elevator relative position and elevator current movement for request down)
+SEQUENCE (set score according to elevator relative position and elevator current status for request down)
 
-    IF Elevator relative position < 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position < 0 AND Elevator current status = move UP THEN
     SET score 1
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position < 0 AND Elevator current status = move DOWN THEN
     SET score 2
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position < 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position > 0 AND Elevator current status = move UP THEN
     SET score 0
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position > 0 AND Elevator current status = move DOWN THEN
     SET score 2
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position > 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
@@ -319,7 +319,7 @@ SEQUENCE (get data)
 
     READ user call floor (value)
     READ all elevator current floor (value)
-    READ all the elevators current movement
+    READ all the elevators current status
     READ all the elevators load weight (value)
     READ all the elevators |UsersCallFloor - ElevatorCurrentFloor| 
     
@@ -342,58 +342,58 @@ END SEQUENCE
 
 
 
-SEQUENCE (set score according to elevator relative position and elevator current movement for request up)
+SEQUENCE (set score according to elevator relative position and elevator current status for request up)
 
-    IF Elevator relative position < 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position < 0 AND Elevator current status = move UP THEN
     SET score 2
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position < 0 AND Elevator current status = move DOWN THEN
     SET score 0
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position < 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position > 0 AND Elevator current status = move UP THEN
     SET score 0
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position > 0 AND Elevator current status = move DOWN THEN
     SET score 1
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position > 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
 END SEQUENCE
 
 
-SEQUENCE (set score according to elevator relative position and elevator current movement for request down)
+SEQUENCE (set score according to elevator relative position and elevator current status for request down)
 
-    IF Elevator relative position < 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position < 0 AND Elevator current status = move UP THEN
     SET score 1
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position < 0 AND Elevator current status = move DOWN THEN
     SET score 2
     END IF
 
-    IF Elevator relative position < 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position < 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move UP THEN
+    IF Elevator relative position > 0 AND Elevator current status = move UP THEN
     SET score 0
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = move DOWN THEN
+    IF Elevator relative position > 0 AND Elevator current status = move DOWN THEN
     SET score 2
     END IF
 
-    IF Elevator relative position > 0 AND Elevator current movement = IDLE THEN
+    IF Elevator relative position > 0 AND Elevator current status = IDLE THEN
     SET score 3
     END IF
 
