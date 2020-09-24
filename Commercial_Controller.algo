@@ -67,32 +67,6 @@ SEQUENCE (call down) // 'when pressing call down button'
 
 END SEQUENCE
 
-SEQUENCE (call down)
-
-    CALL SEQUENCE (get data)
-
-    CALL SEQUENCE (set score according to distance between elevator current floor and user call floor)
-
-    CALL SEQUENCE (set score according to elevator relative position and elevator current position for request up)
-
-    CALL SEQUENCE (set index)
-
-    CALL SEQUENCE (choose elevator to call)
-
-    IF choosen elevator relative position value < 0 THEN
-        CALL SEQUENCE (move up)
-        CALL SEQUENCE (open close doors)
-    END IF
-    IF choosen elevator relative position value = 0 THEN
-        CALL SEQUENCE (open close doors)
-    END IF
-    IF choosen elevator relative position value > 0 THEN
-        CALL SEQUENCE (move down)
-        CALL SEQUENCE (open close doors)
-    END IF
-
-END SEQUENCE
-
 
 
 SEQUENCE (get data)
