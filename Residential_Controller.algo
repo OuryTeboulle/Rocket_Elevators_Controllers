@@ -6,7 +6,7 @@ variables:
 user call floor
 elevator current floor
 elevator relative position = elevator current floor (value) - user call floor (value)
-distance between elevator current floor and user call floor = |user call floor (value) - elevator current floor (value)| 
+distance between elevator current floor and user call floor = |user call floor (value) - elevator current floor (value)| //'absolute value, can be only positive number '
 elevator current movement = idle || move up || move down
 elevator load weight
 
