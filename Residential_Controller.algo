@@ -4,9 +4,10 @@
 variables:
 
 user call floor
+user requested floor
 elevator current floor
 elevator relative position = elevator current floor (value) - user call floor (value)
-distance between elevator current floor and user call floor = |user call floor (value) - elevator current floor (value)| //'absolute value, can be only positive number '
+distance between elevator current floor and user call floor = |user call floor (value) - elevator current floor (value)| // 'absolute value, can be only >= 0 '
 elevator current movement = idle || move up || move down
 elevator load weight
 
@@ -67,6 +68,23 @@ SEQUENCE (call down) // 'when pressing call down button'
 
 END SEQUENCE
 
+
+SEQUENCE (push floor request button) // 'when pressing floor request button in elevator cage'
+
+    READ the time 
+    READ the floor requested (value)
+    CALL SEQUENCE (close doors when pressing floor request button)
+
+    IF floor requested (value) > elevator current floor THEN
+    CALL SEQUENCE (move up to requested floor)
+
+    IF floor requested (value) < elevator current floor THEN
+    CALL SEQUENCE (move down to requested floor)
+
+    IF floor requested (value) = elevator current floor THEN
+    DO NOTHING
+
+END SEQUENCE
 
 
 SEQUENCE (get data)
@@ -178,8 +196,8 @@ END SEQUENCE
 SEQUENCE (move down)
 
     REPEAT 
-        Elevator A go down into column
-    UNTIL ∆Xa = 0 THEN
+        Elevator go down into column
+    UNTIL elevator current floor (value ) =  user requested floor (value) THEN
     stop
 
 END SEQUENCE
@@ -188,8 +206,28 @@ END SEQUENCE
 SEQUENCE (move up)
 
     REPEAT 
-        Elevator A go up into column
-    UNTIL ∆Xa = 0 THEN
+        Elevator go up into column
+    UNTIL elevator current floor (value ) =  user requested floor (value)  THEN
+    stop
+
+END SEQUENCE
+
+
+SEQUENCE (move down to requested floor)
+
+    REPEAT 
+        Elevator go down into column
+    UNTIL elevator current floor (value ) =  user requested floor (value) THEN
+    stop
+
+END SEQUENCE
+
+
+SEQUENCE (move up to requested floor)
+
+    REPEAT 
+        Elevator go up into column
+    UNTIL elevator current floor (value ) =  user requested floor (value)  THEN
     stop
 
 END SEQUENCE
@@ -209,6 +247,17 @@ SEQUENCE (open close doors)
         READ time
         CALL SEQUENCE (StayOpen3s)
         close elevator doors
+    UNTIL doors path is not blocked
+    END IF   
+
+END SEQUENCE
+
+SEQUENCE (close doors when pressing floor request button)
+
+    READ time
+    ABORT SEQUENCE (StayOpen7s)
+    CALL SEQUENCE (StayOpen3s)
+    close elevator doors
     UNTIL doors path is not blocked
     END IF   
 
