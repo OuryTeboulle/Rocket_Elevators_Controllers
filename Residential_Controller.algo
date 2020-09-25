@@ -6,291 +6,231 @@ variables:
 userCallFloor
 userRequestedFloor
 elevatorCurrentFloor
-elevatorRelativePosition = elevatorCurrentFloor (value) - userCallFloor (value)
-distance between elevatorCurrentFloor and userCallFloor = |userCallFloor (value) - elevatorCurrentFloor (value)| // 'absolute value, can be only >= 0 '
+elevatorRelativePosition = elevatorCurrentFloor  - userCallFloor 
+distance between elevatorCurrentFloor and userCallFloor = |userCallFloor  - elevatorCurrentFloor | // 'absolute value, can be only >= 0 '
 elevatorCurrentStatus = idle || moveUp || moveDown
 elevatorLoadWeight
 
 
-SEQUENCE (manage requests)  // 'manage request according to elevatorCurrentStatus'
 
-IF the elevatorCurrentStatus of the requested elevator = idle THEN
-DO the requested SEQUENCE
+SEQUENCE manageRequests  // 'manage request according to elevatorCurrentStatus'
+    IF the elevatorCurrentStatus of the requested elevator = idle THEN
+    DO the requested SEQUENCE
+    IF the elevatorCurrentStatus of the requested elevator = moveUp OR moveDown THEN
+    ADD the requested SEQUENCE on a list 
 
-IF the elevatorCurrentStatus of the requested elevator = moveUp || moveDown THEN
-ADD the requested SEQUENCE on a list 
-
-SEQUENCE (send request) // 'sending request to an elevator'
-
+ENDSEQUENCE sendRequest // 'sending request to an elevator'
 
 
 
-SEQUENCE (call up)  // 'when pressing call up button'
 
-    CALL SEQUENCE (get data)
-
-    CALL SEQUENCE (set score according to distance between elevatorCurrentFloor and userCallFloor)
-
-    CALL SEQUENCE (set score according to elevatorRelativePosition and elevator current position for request up)
-
-    CALL SEQUENCE (set index)
-
-    CALL SEQUENCE (chooseElevatorToCall)
-
+SEQUENCE callUp  // 'when pressing call up button'
+    CALL SEQUENCE getData
+    CALL SEQUENCE SetScoreAccordingToDistanceBetweenElevatorCurrentFloorAndUserCallFloor
+    CALL SEQUENCE setScoreAccordingToElevatorRelativePositionAndElevatorCurrentPositionForRequestUp
+    CALL SEQUENCE setIndex
+    CALL SEQUENCE chooseElevatorToCall
     IF choosen elevatorRelativePosition value < 0 THEN
-        CALL SEQUENCE (moveUp)
-        CALL SEQUENCE (openCloseDoors)
+        CALL SEQUENCE moveUp
+        CALL SEQUENCE openCloseDoors
     END IF
     IF choosen elevatorRelativePosition value = 0 THEN
-        CALL SEQUENCE (openCloseDoors)
+        CALL SEQUENCE openCloseDoors
     END IF
     IF choosen elevatorRelativePosition value > 0 THEN
-        CALL SEQUENCE (moveDown)
-        CALL SEQUENCE (openCloseDoors)
+        CALL SEQUENCE moveDown
+        CALL SEQUENCE openCloseDoors
     END IF
-
-END SEQUENCE
-
+ENDSEQUENCE
 
 
-SEQUENCE (call down) // 'when pressing call down button'
 
-    CALL SEQUENCE (get data)
-
-    CALL SEQUENCE (set score according to distance between elevatorCurrentFloor and userCallFloor)
-
-    CALL SEQUENCE (set score according to elevatorRelativePosition and elevator current position for request down)
-
-    CALL SEQUENCE (set index)
-
-    CALL SEQUENCE (chooseElevatorToCall)
-
+SEQUENCE callDown // 'when pressing call down button'
+    CALL SEQUENCE getData
+    CALL SEQUENCE SetScoreAccordingToDistanceBetweenElevatorCurrentFloorAndUserCallFloor
+    CALL SEQUENCE setScoreAccording to elevatorRelativePosition and elevator current position for request down
+    CALL SEQUENCE setIndex
+    CALL SEQUENCE chooseElevatorToCall
     IF choosen elevatorRelativePosition value < 0 THEN
-        CALL SEQUENCE (moveUp)
-        CALL SEQUENCE (openCloseDoors)
+        CALL SEQUENCE moveUp
+        CALL SEQUENCE openCloseDoors
     END IF
     IF choosen elevatorRelativePosition value = 0 THEN
-        CALL SEQUENCE (openCloseDoors)
+        CALL SEQUENCE openCloseDoors
     END IF
     IF choosen elevatorRelativePosition value > 0 THEN
-        CALL SEQUENCE (moveDown)
-        CALL SEQUENCE (openCloseDoors)
+        CALL SEQUENCE moveDown
+        CALL SEQUENCE openCloseDoors
     END IF
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (pushFloorRequestButton) // 'when pressing floor request button in elevator cage'
-
+SEQUENCE pushFloorRequestButton // 'when pressing floor request button in elevator cage'
     READ the time 
-    READ the floor requested (value)
-    CALL SEQUENCE (closeDoors when pressing floor request button)
-
-    IF floor requested (value) > elevatorCurrentFloor THEN
-    CALL SEQUENCE (moveUp to requested floor)
-    CALL SEQUENCE (openCloseDoors)
-
-    IF floor requested (value) < elevatorCurrentFloor THEN
-    CALL SEQUENCE (moveDown to requested floor)
-    CALL SEQUENCE (openCloseDoors)
-
-    IF floor requested (value) = elevatorCurrentFloor THEN
+    READ the floor requested 
+    CALL SEQUENCE closeDoors when pressing floor request button
+    IF floor requested  > elevatorCurrentFloor THEN
+    CALL SEQUENCE moveUpToRequestedFloor
+    CALL SEQUENCE openCloseDoors
+    IF floor requested  < elevatorCurrentFloor THEN
+    CALL SEQUENCE moveDownToRequestedFloor
+    CALL SEQUENCE openCloseDoors
+    IF floor requested  = elevatorCurrentFloor THEN
     DO NOTHING
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (get data)
-
-    READ userCallFloor (value)
-    READ all elevatorCurrentFloor (value)
-    READ all the elevatorCurrentStatus
-    READ all the elevatorLoadWeight (value)
-    READ all the elevators |UsersCallFloor - ElevatorCurrentFloor| 
-    
+SEQUENCE getData
+    READ userCallFloor 
+    READ ALL elevatorCurrentFloor 
+    READ ALL elevatorCurrentStatus
+    READ ALL elevatorLoadWeight 
+    READ ALL elevators |UsersCallFloor - ElevatorCurrentFloor| 
     CALCULATE elevatorRelativePosition FOR ALL elevators
     READ elevatorRelativePosition FOR ALL elevators
     CALCULATE distance between elevatorCurrentFloor and userCallFloor FOR ALL elevators
     READ distance between elevatorCurrentFloor and userCallFloor FOR ALL elevators
-    
-
-END SEQUENCE
+ENDSEQUENCE
 
 
 
-SEQUENCE (set score according to distance between elevatorCurrentFloor and userCallFloor)
-
+SEQUENCE SetScoreAccordingToDistanceBetweenElevatorCurrentFloorAndUserCallFloor
     SORT elevators values of distance between elevatorCurrentFloor and userCallFloor by decreasing value
     SET score with integer number from 1 to the elevators according to the sorting
-
-END SEQUENCE
-
+ENDSEQUENCE
 
 
-SEQUENCE (set score according to elevatorRelativePosition and elevatorCurrentStatus for request up)
 
+SEQUENCE setScoreAccording to elevatorRelativePosition and elevatorCurrentStatus for request up
     IF elevatorRelativePosition < 0 AND elevatorCurrentStatus = moveUp THEN
     SET score 2
     END IF
-
     IF elevatorRelativePosition < 0 AND elevatorCurrentStatus = moveDown THEN
     SET score 0
     END IF
-
     IF elevatorRelativePosition < 0 AND elevatorCurrentStatus = IDLE THEN
     SET score 3
     END IF
-
     IF elevatorRelativePosition > 0 AND elevatorCurrentStatus = moveUp THEN
     SET score 0
     END IF
-
     IF elevatorRelativePosition > 0 AND elevatorCurrentStatus = moveDown THEN
     SET score 1
     END IF
-
     IF elevatorRelativePosition > 0 AND elevatorCurrentStatus = IDLE THEN
     SET score 3
     END IF
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (set score according to elevatorRelativePosition and elevatorCurrentStatus for request down)
-
+SEQUENCE setScoreAccording to elevatorRelativePosition and elevatorCurrentStatus for request down
     IF elevatorRelativePosition < 0 AND elevatorCurrentStatus = moveUp THEN
     SET score 1
     END IF
-
     IF elevatorRelativePosition < 0 AND elevatorCurrentStatus = moveDown THEN
     SET score 2
     END IF
-
     IF elevatorRelativePosition < 0 AND elevatorCurrentStatus = IDLE THEN
     SET score 3
     END IF
-
     IF elevatorRelativePosition > 0 AND elevatorCurrentStatus = moveUp THEN
     SET score 0
     END IF
-
     IF elevatorRelativePosition > 0 AND elevatorCurrentStatus = moveDown THEN
     SET score 2
     END IF
-
     IF elevatorRelativePosition > 0 AND elevatorCurrentStatus = IDLE THEN
     SET score 3
     END IF
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (set index)
-
-    READ the scores obtained in SEQUENCE (set score according to distance between elevatorCurrentFloor and userCallFloor) AND SEQUENCE (set score according to elevatorRelativePosition and elevator current position for request up)
+SEQUENCE setIndex
+    READ the scores obtained in SEQUENCE SetScoreAccordingToDistanceBetweenElevatorCurrentFloorAndUserCallFloor AND SEQUENCE setScoreAccordingToElevatorRelativePositionAndElevatorCurrentPositionForRequestUp
     for each elevator, add the respective obtained scores in these 2 sequences
     SET the result as "index value"
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (chooseElevatorToCall)
-
+SEQUENCE chooseElevatorToCall
     READ the "index value" number
     SELECT elevator with the highest "index value" number
-
     IF some "index value" number are equals THEN
     SELECT elevator with the minimum load weight 
     END IF
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (moveDown)
-
+SEQUENCE moveDown
     REPEAT 
         Elevator go down into column
-    UNTIL elevatorCurrentFloor (value ) =  userRequestedFloor (value) THEN
+    UNTIL elevatorCurrentFloor  =  userRequestedFloor  THEN
     stop
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (moveUp)
-
+SEQUENCE moveUp
     REPEAT 
         Elevator go up into column
-    UNTIL elevatorCurrentFloor (value ) =  userRequestedFloor (value)  THEN
+    UNTIL elevatorCurrentFloor = userRequestedFloor  THEN
     stop
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (moveDown to requested floor)
-
+SEQUENCE moveDownToRequestedFloor
     REPEAT 
         Elevator go down into column
-    UNTIL elevatorCurrentFloor (value ) =  userRequestedFloor (value) THEN
+    UNTIL elevatorCurrentFloor value  =  userRequestedFloor  THEN
     stop
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (moveUp to requested floor)
-
+SEQUENCE moveUpToRequestedFloor
     REPEAT 
         Elevator go up into column
-    UNTIL elevatorCurrentFloor (value ) =  userRequestedFloor (value)  THEN
+    UNTIL elevatorCurrentFloor value  =  userRequestedFloor   THEN
     stop
-
-END SEQUENCE
-
+ENDSEQUENCE
 
 
-SEQUENCE (openCloseDoors)
 
+SEQUENCE openCloseDoors
     open elevator doors
     elevator doors stay open
     READ time
-    CALL SEQUENCE (StayOpen7s)
+    CALL SEQUENCE StayOpen7s
     close elevator A doors
     IF doors path is blocked
     REPEAT
         open elevator  doors
         READ time
-        CALL SEQUENCE (StayOpen3s)
+        CALL SEQUENCE StayOpen3s
         close elevator doors
     UNTIL doors path is not blocked
     END IF   
+ENDSEQUENCE
 
-END SEQUENCE
 
-SEQUENCE (closeDoors when pressing floor request button)
-
+SEQUENCE closeDoors when pressing floor request button
     READ time
-    ABORT SEQUENCE (StayOpen7s)
-    CALL SEQUENCE (StayOpen3s)
+    ABORT SEQUENCE StayOpen7s
+    CALL SEQUENCE StayOpen3s
     close elevator doors
     UNTIL doors path is not blocked
     END IF   
-
-END SEQUENCE
-
+ENDSEQUENCE
 
 
-SEQUENCE (StayOpen7s)
 
+SEQUENCE StayOpen7s
     REPEAT  
         elevator doors stay open
     UNTIL time = time  + 7s
+ENDSEQUENCE
 
-END SEQUENCE
 
-
-SEQUENCE (StayOpen3s)
-
+SEQUENCE StayOpen3s
     REPEAT  
         elevator doors stay open
     UNTIL time = time  + 3s
-
-END SEQUENCE
+ENDSEQUENCE
